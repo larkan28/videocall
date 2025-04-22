@@ -24,6 +24,7 @@
     let localStream = null;
 
     peer.on("open", id => {
+      console.log("Peer ID generado:", id);  // Agrega un log aquí
       document.getElementById("my-id").textContent = id;
     });
 
@@ -34,6 +35,7 @@
       });
 
     peer.on("call", call => {
+      console.log("Llamada iniciada");  // Agrega un log para verificar que se está haciendo clic en "Llamar"
       call.answer(localStream);
       call.on("stream", remoteStream => {
         remoteVideo.srcObject = remoteStream;
@@ -43,6 +45,7 @@
     function startCall() {
       const remoteId = document.getElementById("remote-id").value;
       const call = peer.call(remoteId, localStream);
+      console.log("Intentando llamar a:", remoteId);
       call.on("stream", remoteStream => {
         remoteVideo.srcObject = remoteStream;
       });
