@@ -20,7 +20,13 @@
     const myVideo = document.getElementById("my-video");
     const remoteVideo = document.getElementById("remote-video");
 
-    const peer = new Peer(); // crea ID aleatorio
+    const peer = new Peer({
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" } // STUN de Google
+        ]
+      }
+    });
     let localStream = null;
 
     peer.on("open", id => {
