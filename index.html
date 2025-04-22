@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Videollamada con PeerJS</title>
+  <script src="peerjs.min.js"></script>
+</head>
+<body>
+  <h2>Tu ID: <span id="my-id">Cargando...</span></h2>
+
+  <input type="text" id="remote-id" placeholder="ID del otro usuario">
+  <button onclick="startCall()">Llamar</button>
+
+  <h3>Video local</h3>
+  <video id="my-video" autoplay muted playsinline></video>
+
+  <h3>Video remoto</h3>
+  <video id="remote-video" autoplay playsinline></video>
+
+  <script>
+    const myVideo = document.getElementById("my-video");
+    const remoteVideo = document.getElementById("remote-video");
+
+    const peer = new Peer(); // crea ID aleatorio
+    let localStream = null;
+
+    peer.on("open", id => {
+      document.getElementById("my-id").textContent = id;
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        localStream = stream;
+        myVideo.srcObject = stream;
+      });
+
+    peer.on("call", call => {
+      call.answer(localStream);
+      call.on("stream", remoteStream => {
+        remoteVideo.srcObject = remoteStream;
+      });
+    });
+
+    function startCall() {
+      const remoteId = document.getElementById("remote-id").value;
+      const call = peer.call(remoteId, localStream);
+      call.on("stream", remoteStream => {
+        remoteVideo.srcObject = remoteStream;
+      });
+    }
+  </script>
+</body>
+</html>
